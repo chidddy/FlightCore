@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-22.04, windows-latest]
+        platform: [windows-latest]
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -33,20 +33,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - name: install dependencies (ubuntu only)
-      if: matrix.platform == 'ubuntu-22.04'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-    - name: Disable self-updater
-      shell: bash
-      run: |
-        jq '.tauri.updater.active = false' src-tauri/tauri.conf.json > src-tauri/tauri.conf.json.new
-        rm src-tauri/tauri.conf.json
-        mv src-tauri/tauri.conf.json.new src-tauri/tauri.conf.json
     - name: install app dependencies and build it
-      env:
-        TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
       run: |
         npm install
         cd src-vue && npm install && cd ..
@@ -54,10 +41,8 @@ jobs:
     - uses: tauri-apps/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
     - name: upload build artifact
       uses: actions/upload-artifact@v2
       with:
         path: |
-          src-tauri/target/release/bundle/appimage/*
           src-tauri/target/release/bundle/msi/*

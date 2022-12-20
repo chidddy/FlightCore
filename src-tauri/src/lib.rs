@@ -269,13 +269,14 @@ pub fn launch_northstar(
             return Err(anyhow!("Not all checks were met").to_string());
         }
 
+        // i manually have the EA app open i dont need to it
         // Require Origin to be running to launch Northstar
-        let origin_is_running = check_origin_running();
-        if !origin_is_running {
-            return Err(
-                anyhow!("Origin not running, start Origin before launching Northstar").to_string(),
-            );
-        }
+        // let origin_is_running = check_origin_running();
+        // if !origin_is_running {
+        //     return Err(
+        //         anyhow!("Origin not running, start Origin before launching Northstar").to_string(),
+        //     );
+        // }
     }
 
     // Switch to Titanfall2 directory for launching
